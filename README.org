@@ -1,0 +1,105 @@
+#+TITLE: Paso
+#+AUTHOR: Hauguel Simon
+
+
+#+html: <div align="center"><img width="300px" src="./logo_paso.png"/></div>
+
+* Table of Contents :toc:
+- [[#review][Review]]
+  - [[#whats-an-isomorphism-between-types-][What's an isomorphism between types ?]]
+  - [[#how-paso-uses-it-][How Paso uses it ?]]
+- [[#an-exemple-in-a-concret-case][An exemple in a concret case]]
+  - [[#dynamic-fibonacci][Dynamic Fibonacci]]
+
+* Review
+#+BEGIN_QUOTE
+Paso is a meta and functional programming language with a strong static inferred and iso-polymorphic type system
+#+END_QUOTE
+
+This is how i describe Paso. But... *what's this stupid iso before polymorphic !!?*
+/Calm down please/
+
+In fact this is pretty simple, look at this code :
+#+BEGIN_SRC haskell
+data Cat = Meow
+data Dog = Woof
+
+needToEat :: Dogs -> IO ()
+needToEat _ = putStrLn "Is eating"
+#+END_SRC
+
+For people who are not mad scientists and cannot read haskell, this code :
+ - Creates 2 types ~Cat~ and ~Dog~, with as constructor (a way to build a value of this type) respectively ~Meow~ and ~Woof~.
+ - Then there is a ~needToEat~ function, it takes a ~Dogs~ and makes it eat.
+
+But there is an important problem ! How a cat can eat with this program ?
+This is terrible :(
+
+This is where paso provides a solution! /(haskell too, but shhh, it's my readme I do what I want)/
+
+** What's an isomorphism between types ?
+Let's take the ~Cat~ and ~Dog~ types.
+Spoiler: They are isomorphic.
+But why?
+
+Two types ~A~ and ~B~ are isomorphic means:
+exists (f : A \rightarrow B, g : B \rightarrow A) such as (f . g) \equiv idA and (g . f) \equiv idB
+
+In other words, there must be two functions ~f~ and ~g~. ~f~ map from ~A~ to ~B~ and ~g~ from ~B~ to ~A~ (the names of the functions do not matter)
+And two rules must be respected:
+ - The composition of ~f . g~ must be equivalent to the identity of ~A~
+ - The composition of ~g . f~ must be equivalent to the identity of ~B~
+
+So now, let's implement ~f : Cats -> Dogs~ and ~g : Dogs -> Cats~
+#+BEGIN_SRC haskell
+f :: Cats -> Dogs
+f _ = Woof
+
+g :: Dogs -> Cats
+g _ = Meow
+
+-- Let verify the identity law
+-- (f . g) Woof = (\_ -> (\_ -> Woof) Meow) Woof
+--              = (\_ -> Woof) Meow
+--              = Woof
+-- (Same for (g . f))
+-- Works !
+#+END_SRC
+
+** How Paso uses it ?
+
+Let's go back to the problem of cats who can't eat, and solve it with Paso :
+#+BEGIN_SRC haskell
+type Cats := { Meow }
+type Dogs := { Woof }
+
+define auto Cats ~ Dogs
+
+needToEat : { A ~ Dogs } => A -> Effect -- or just needToEat : ~Dogs -> Effect
+needToEat _ := { print "Is eating"; }
+#+END_SRC
+
+We proof just below that ~Cats~ and ~Dogs~ are isomorphic.
+
+~A ~ Dogs~ means ~forall type A isomorphic to Dogs~
+So, we can pass Meow to this function, this is amazing ! Cat can finally eat
+
+And now you've got cats thanks to paso, isn't that amazing!
+
+* An exemple in a concret case
+
+** Dynamic Fibonacci
+#+BEGIN_SRC haskell
+fiboN : ~Int -> Int -- compute the n-th element of fibonacci sequence in a dynamic way
+fiboN n := {
+    let go n list := {
+        if match list
+        | (x :> y :> z) => {
+            if (n == 0) | { x; }
+                        | { go (n - 1) [y ; x + y ; z]; }
+            }
+        | _             => { noway; }
+        }
+    if (n >= 0) | { fiboList n [0 ; 1 ; 0]; } | { -1; }
+}
+#+END_SRC

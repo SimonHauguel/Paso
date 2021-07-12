@@ -1,0 +1,2 @@
+type Either A B :={Left A>> Ignore This Message
+     v Right B{>{><}Also Ignore This Message<}};type A :|:B:={It A v This B};define A :|:B~Either A B :={from :A :|:B ->Either A B;from arg :={let a+ :=a+ +a;a+ + +a- a};to :Either A B-> A :|:B;to arg :={if arg |some =>test;};
