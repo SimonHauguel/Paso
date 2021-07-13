@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Parser.Lex.Lexer
+module Paso.Lexer.Tokenise
   ( tokenise
   , lexerToken
   )
@@ -18,11 +18,11 @@ import qualified Text.Megaparsec.Char.Lexer    as MCL
 import           Data.Text                      ( Text
                                                 , pack
                                                 )
-import           Language.Tokens                ( Tokens(..) )
+import           Paso.Language.Tokens                ( Tokens(..) )
 import           Data.Function                  ( on )
 import           Data.Functor                   ( ($>) )
-import           Language.Named
-import           Parser.Lex.Stream
+import           Paso.Language.Named
+import           Paso.Lexer.Stream
 
 isIn :: [Char] -> Lexer Char
 isIn list = satisfy (`elem` list)

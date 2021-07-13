@@ -27,10 +27,19 @@ source-repository head
 
 library
   exposed-modules:
-      Parser.Lex.Lexer
-      Parser.Lex.Stream
-      Language.Named
-      Language.Tokens
+      Paso.Language.Named
+      Paso.Language.Tokens
+      Paso.Lexer.Stream
+      Paso.Lexer.Tokenise
+      Paso.Parser.IfThenElse
+      Paso.Parser.TypesAnnotations
+      Paso.Parser.ParserData
+      Paso.Parser.Utils
+      Paso.Parser.AST.Match
+      Paso.Parser.AST.Expr
+      Paso.Program.Types
+      Paso.Gen
+
   other-modules:
       Paths_paso
   hs-source-dirs:
@@ -41,6 +50,7 @@ library
                 , megaparsec
                 , mtl >= 2.2.2
                 , text >= 1.2.4.1
+                , hashmap
   default-language: Haskell2010
 
 executable pasoc

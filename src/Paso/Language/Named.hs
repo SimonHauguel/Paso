@@ -1,4 +1,4 @@
-module Language.Named where
+module Paso.Language.Named where
 
 maj_, min_, letter, available :: String
 reservedName, reservedOp, otherReserved :: [String]

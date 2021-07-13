@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 
-module Language.Tokens where
+module Paso.Language.Tokens where
 
 type Name = String
 type Value = String

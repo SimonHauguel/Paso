@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 
-module Parser.Lex.Stream
+module Paso.Lexer.Stream
   ( Lexer
   , Error
   , LexStream
@@ -12,7 +12,7 @@ where
 import           Data.Foldable                  ( fold )
 import           Data.Text                      ( Text )
 import           Data.Void                      ( Void )
-import           Language.Tokens                ( Tokens(..) )
+import           Paso.Language.Tokens           ( Tokens(..) )
 import qualified Text.Megaparsec               as MG
 import           Text.Megaparsec.Pos
 import           Text.Megaparsec.Stream         ( TraversableStream

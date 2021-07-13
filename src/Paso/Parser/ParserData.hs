@@ -1,11 +1,11 @@
-module Parser.Parser.ParserData where
+module Paso.Parser.ParserData where
 
 
 import qualified Text.Megaparsec               as MG
-import           Parser.Lex.Stream
+import           Paso.Lexer.Stream
 import           Data.Void                      ( Void ) -- TODO Remove to custom error handling
 import           Data.Text                      ( pack )
-import           Parser.Lex.Lexer
+import           Paso.Lexer.Tokenise
 
 
 type Parser = MG.Parsec Void LexStream -- TODO Put custom Type Error instead of Void

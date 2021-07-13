@@ -1,9 +1,9 @@
-module Parser.Parser.Utils where
+module Paso.Parser.Utils where
 
-import           Language.Tokens
+import           Paso.Language.Tokens
 import qualified Text.Megaparsec               as MG
-import           Parser.Parser.ParserData
-import           Parser.Lex.Stream
+import           Paso.Parser.ParserData
+import           Paso.Lexer.Stream
 
 stringTok :: Tokens
 stringTok = STRING mempty
