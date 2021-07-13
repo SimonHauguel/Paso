@@ -4,8 +4,8 @@ import Paso.Program.Types
 
 data MatchValue
   = Ignore
-  | DecVar
-  | Value
+  | Variable String
+  | Value String
   deriving Show
 
 type MatchConstructor

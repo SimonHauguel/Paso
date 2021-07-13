@@ -45,12 +45,13 @@ library
   hs-source-dirs:
       src
   build-depends:
-                  base >=4.7 && <5
+                    base >=4.7 && <5
                 , containers >= 0.6.2.1
+                , hashmap
                 , megaparsec
                 , mtl >= 2.2.2
+                , parser-combinators >= 1.2.1
                 , text >= 1.2.4.1
-                , hashmap
   default-language: Haskell2010
 
 executable pasoc
