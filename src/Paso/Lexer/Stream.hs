@@ -6,6 +6,7 @@ module Paso.Lexer.Stream
   , LexStream
   , PTokens(..)
   , (===)
+  , (#==)
   )
 where
 
@@ -47,3 +48,14 @@ infix 4 ===
 
 (===) :: Tokens -> PTokens -> Bool
 tok === MkPTokens { value = tok' } = tok == tok'
+
+(#==) :: Tokens -> PTokens -> Bool
+tok #== MkPTokens {value = tok' } = case (tok, tok') of
+  (Iden a, Iden b)         -> a == b
+  (IdenOp a, IdenOp b)     -> a == b
+  (TypeName a, TypeName b) -> a == b
+  (INT a, INT b)           -> a == b
+  (FLOAT a, FLOAT b)       -> a == b
+  (STRING a, STRING b)     -> a == b
+  (TypeVar a, TypeVar b)   -> a == b
+  (a, b)                   -> a == b
