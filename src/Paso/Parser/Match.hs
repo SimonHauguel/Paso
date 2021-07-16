@@ -17,12 +17,19 @@ valueConstructorParser :: Parser MatchValue
 valueConstructorParser = MG.choice
   [ strictTok (Iden "_") $> Ignore
   , Variable . getName <$> tok idenTok
-  , Rec <$> tupleConstructor
+  , Rec <$> tuplePattern
+  , Rec <$> listPattern
   ]
 
 
-tupleConstructor :: Parser MatchConstructor
-tupleConstructor = parens bodyTuple
+tuplePattern :: Parser MatchConstructor
+tuplePattern = parens bodyTuple
  where
   bodyTuple =
     MkConstructor "Tuple" <$> sepBy2 valueConstructorParser (tok SemiColon)
+
+listPattern :: Parser MatchConstructor
+listPattern = between (tok OpenBrace) (tok CloseBrace) bodyList
+  where
+    bodyList =
+      MkConstructor "List" <$> sepEndBy valueConstructorParser (tok SemiColon)
