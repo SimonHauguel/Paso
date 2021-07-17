@@ -26,10 +26,23 @@ tuplePattern :: Parser MatchConstructor
 tuplePattern = parens bodyTuple
  where
   bodyTuple =
-    MkConstructor "Tuple" <$> sepBy2 valueConstructorParser (tok SemiColon)
+    NonIrrefutable . MkConstructor "Tuple" <$> sepBy2 valueConstructorParser (tok SemiColon)
 
 listPattern :: Parser MatchConstructor
 listPattern = between (tok OpenBrace) (tok CloseBrace) bodyList
-  where
-    bodyList =
-      MkConstructor "List" <$> sepEndBy valueConstructorParser (tok SemiColon)
+ where
+  bodyList =
+    NonIrrefutable . MkConstructor "List" <$> sepEndBy valueConstructorParser (tok SemiColon)
+
+typePattern :: Parser MatchConstructor
+typePattern = do
+  wName <- tok typeNameTok
+  NonIrrefutable . MkConstructor (getName wName) <$> many valueConstructorParser
+
+-- TODO : add OpTypePattern parser
+
+patternParser :: Parser MatchConstructor
+patternParser =
+  MG.choice [typePattern, listPattern, MG.try tuplePattern]
+  <|> Irrefutable <$> valueConstructorParser
+  <|> parens patternParser
