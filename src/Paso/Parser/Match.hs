@@ -16,32 +16,36 @@ valueConstructorParser :: Parser MatchValue
 valueConstructorParser = MG.choice
   [ strictTok (Iden "_") $> Ignore
   , Variable . getName <$> tok idenTok
+  , Rec <$> number
   , Rec <$> tuplePattern
   , Rec <$> listPattern
   ]
+
+number :: Parser MatchConstructor
+number = NonIrrefutable . Left <$> (tok intTok $> Value "Number") -- TODO change the value
 
 
 tuplePattern :: Parser MatchConstructor
 tuplePattern = parens bodyTuple
  where
   bodyTuple =
-    NonIrrefutable . MkConstructor "Tuple" <$> sepBy2 valueConstructorParser (tok SemiColon)
+    NonIrrefutable . Right . MkConstructor "Tuple" <$> sepBy2 valueConstructorParser (tok SemiColon)
 
 listPattern :: Parser MatchConstructor
 listPattern = between (tok OpenBrace) (tok CloseBrace) bodyList
  where
   bodyList =
-    NonIrrefutable . MkConstructor "List" <$> sepEndBy valueConstructorParser (tok SemiColon)
+    NonIrrefutable . Right . MkConstructor "List" <$> sepEndBy valueConstructorParser (tok SemiColon)
 
 typePattern :: Parser MatchConstructor
 typePattern = do
   wName <- tok typeNameTok
-  NonIrrefutable . MkConstructor (getName wName) <$> many valueConstructorParser
+  NonIrrefutable . Right . MkConstructor (getName wName) <$> many valueConstructorParser
 
 -- TODO : add OpTypePattern parser
 
 patternParser :: Parser MatchConstructor
 patternParser =
-  MG.choice [typePattern, listPattern, tuplePattern]
+  MG.choice [typePattern, listPattern, tuplePattern, number]
   <|> Irrefutable <$> valueConstructorParser
   <|> parens patternParser

@@ -5,11 +5,11 @@ import           Paso.Program.Types
 data MatchValue
   = Ignore
   | Variable String
-  | Value String
+  | Value String -- Temp
   | Rec MatchConstructor
   deriving Show
 
-data MatchConstructor = NonIrrefutable (Constructor MatchValue)
+data MatchConstructor = NonIrrefutable (Either MatchValue (Constructor MatchValue))
                       | Irrefutable MatchValue
                       deriving Show
 

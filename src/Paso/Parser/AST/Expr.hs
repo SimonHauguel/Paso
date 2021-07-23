@@ -7,7 +7,7 @@ type TupleIf = (Expr, NonEmpty (MatchTo Expr))
 
 data Expr
   = If Expr (NonEmpty (MatchTo Expr))
-  | Let (Either MatchConstructor String) Expr
+  | Let (NonEmpty (MatchTo Expr))
   | TestExpr -- Just to test some parser without be annoying with parse complex expression
              -- Must be deleted in the future
   deriving Show

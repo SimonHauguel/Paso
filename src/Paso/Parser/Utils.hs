@@ -21,6 +21,12 @@ typeVarTok = TypeVar mempty
 typeNameTok :: Tokens
 typeNameTok = TypeName mempty
 
+intTok :: Tokens
+intTok = INT 0
+
+floatTok :: Tokens
+floatTok = FLOAT 0.0
+
 tok :: Tokens -> Parser PTokens
 tok t = MG.satisfy (t ===)
 
@@ -42,4 +48,5 @@ getName MkPTokens {value = a} = case a of
   IdenOp   x -> x
   TypeName x -> x
   TypeVar  x -> x
+  STRING   x -> x
   _          -> mempty

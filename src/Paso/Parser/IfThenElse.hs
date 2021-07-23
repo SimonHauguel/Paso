@@ -11,18 +11,19 @@ import Data.Functor (($>))
 import Data.List.NonEmpty (NonEmpty(..))
 import Paso.Parser.Expr
 
-mkRes :: String -> Expr -> MatchTo Expr
-mkRes a b = NonIrrefutable (MkConstructor a []) :~~>: b
-
 ifParse :: Parser Expr
 ifParse = (tok TK.If $> uncurry If) <*> ifPur
 
-
-ifPur :: Parser TupleIf
+ifPur :: Parser TupleIf -- if a | b | c
 ifPur = do
   cond <- expr
+  first <- tok TK.Pipe *> expr
+  second <- tok TK.Pipe *> expr
+  undefined
+  -- pure (cond, mkRes "True" first :| [mkRes "False" second])
+
+ifMulti :: Parser TupleIf -- if | cond => a | cond => b
+ifMulti = do
   _ <- tok TK.Pipe
-  first <- expr
-  _ <- tok TK.Pipe
-  second <- expr
-  pure (cond, mkRes "True" first :| [mkRes "False" second])
+  listeRes <- MG.sepBy1 expr (tok TK.Pipe)
+  undefined
