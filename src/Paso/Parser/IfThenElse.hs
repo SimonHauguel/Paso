@@ -9,17 +9,20 @@ import Paso.Parser.AST.Match
 import Paso.Parser.AST.Expr
 import Data.Functor (($>))
 import Data.List.NonEmpty (NonEmpty(..))
+import Paso.Parser.Expr
 
-test :: Parser Expr
-test = tok idenTok $> Some -- Use only to test the parser
+mkRes :: String -> Expr -> MatchTo Expr
+mkRes a b = NonIrrefutable (MkConstructor a []) :~~>: b
 
-ifPur :: Parser Expr
+ifParse :: Parser Expr
+ifParse = (tok TK.If $> uncurry If) <*> ifPur
+
+
+ifPur :: Parser TupleIf
 ifPur = do
-  _ <- tok TK.If
-  cond <- test
+  cond <- expr
   _ <- tok TK.Pipe
-  first <- parseExpr
+  first <- expr
   _ <- tok TK.Pipe
-  If cond . mkConstruct first <$> parseExpr
-    where parseExpr = MG.between (tok TK.OpenBracket) (tok TK.CloseBracket) test
-          mkConstruct first second = MkConstructor "True" [] :~~>: first :| [MkConstructor "False" [] :~~>: second]
+  second <- expr
+  pure (cond, mkRes "True" first :| [mkRes "False" second])

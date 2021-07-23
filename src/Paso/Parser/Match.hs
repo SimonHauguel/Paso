@@ -7,7 +7,6 @@ import           Control.Monad.Combinators
 import           Text.Megaparsec                ( (<|>) )
 import           Data.Functor                   ( ($>) )
 import           Paso.Parser.Utils
-import           Paso.Parser.AST.Expr
 import           Paso.Parser.AST.Match
 import           Paso.Parser.ParserData
 import           Paso.Program.Types
@@ -43,6 +42,6 @@ typePattern = do
 
 patternParser :: Parser MatchConstructor
 patternParser =
-  MG.choice [typePattern, listPattern, MG.try tuplePattern]
+  MG.choice [typePattern, listPattern, tuplePattern]
   <|> Irrefutable <$> valueConstructorParser
   <|> parens patternParser
