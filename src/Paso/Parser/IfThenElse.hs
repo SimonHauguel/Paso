@@ -8,12 +8,10 @@ import           Paso.Parser.AST.Expr
 import           Data.Functor                   ( ($>) )
 import           Data.List.NonEmpty             ( NonEmpty(..) )
 import           Paso.Parser.Expr
-
-mkIf :: [Either Expr MatchValue] -> TupleIf
-mkIf = undefined
+import           Paso.Parser.Match
 
 ifParse :: Parser Expr
-ifParse = (tok TK.If $> uncurry If) <*> ifPur
+ifParse = (tok TK.If $> uncurry If) <*> ifMulti
 
 
 -- An if a | b | c
@@ -36,14 +34,13 @@ ifPur = do
 --       | cond2 => b
 --       | _     => c
 -- compile to this structure :
--- if cond1 | a | (if cond2 | b | c)
+-- if match True | cond1 => a
+--               | cond2 => b
+--               | _     => c
 ifMulti :: Parser TupleIf
 ifMulti = do
-  _        <- tok TK.Pipe
-  listeRes <- MG.sepBy1 subParserCondExpr (tok TK.Pipe)
-  undefined
-    where subParserCondExpr = do
-            first  <- expr
-            _      <- tok TK.BigArrowRight
-            second <- expr
-            pure (first, second)
+  listeRes <- tok TK.Pipe *> MG.sepBy1 subParserCondExpr (tok TK.Pipe)
+  pure (TestExpr, case listeRes of {(x:xs) -> x :| xs ; _ -> undefined})
+  -- TODO Edit TestExpr value
+ where
+  subParserCondExpr = (:~~>:) <$> exprPattern <*> (tok TK.BigArrowRight *> expr)

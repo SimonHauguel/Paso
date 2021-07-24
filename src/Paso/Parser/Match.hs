@@ -11,6 +11,9 @@ import           Paso.Parser.AST.Expr
 import           Paso.Parser.ParserData
 import           Paso.Program.Types
 
+-- TODO : Implement exprPattern Correctly
+-- TODO : add OpTypePattern parser
+
 
 valueConstructorParser :: Parser MatchValue
 valueConstructorParser = MG.choice
@@ -19,6 +22,7 @@ valueConstructorParser = MG.choice
   , Rec <$> number
   , Rec <$> tuplePattern
   , Rec <$> listPattern
+  , Rec <$> exprPattern
   ]
 
 number :: Parser MatchConstructor
@@ -42,10 +46,11 @@ typePattern = do
   wName <- tok typeNameTok
   NonIrrefutable . Right . MkConstructor (getName wName) <$> many valueConstructorParser
 
--- TODO : add OpTypePattern parser
+exprPattern :: Parser MatchConstructor
+exprPattern = strictTok (Iden "cond") $> NonIrrefutable (Left $ NotEvaluate TestExpr)
 
 patternParser :: Parser MatchConstructor
 patternParser =
-  MG.choice [typePattern, listPattern, tuplePattern, number]
+  MG.choice [typePattern, listPattern, tuplePattern, number, MG.try exprPattern]
   <|> Irrefutable <$> valueConstructorParser
   <|> parens patternParser

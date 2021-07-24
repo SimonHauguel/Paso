@@ -16,10 +16,6 @@ data Expr
   deriving Show
 
 
-
-
-
-
 -- Meta-Match type
 data MatchValue -- NOTE : This is not an expression
                 -- It's a meta-value
@@ -38,7 +34,7 @@ data MatchValue -- NOTE : This is not an expression
 data MatchConstructor
   = NonIrrefutable         -- ^ Patterns that can fail
     (Either MatchValue (Constructor MatchValue))
-  | Irrefutable MatchValue -- ^ Patterns that canno't fail
+  | Irrefutable MatchValue -- ^ Patterns that can not fail
     deriving Show
 
 data MatchTo a = (:~~>:) MatchConstructor a
