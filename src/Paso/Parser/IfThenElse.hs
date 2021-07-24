@@ -1,6 +1,7 @@
 module Paso.Parser.IfThenElse where
 
 import qualified Text.Megaparsec               as MG
+import           Text.Megaparsec                ( (<|>) )
 import qualified Paso.Language.Tokens          as TK
 import           Paso.Parser.ParserData
 import           Paso.Parser.Utils
@@ -11,7 +12,7 @@ import           Paso.Parser.Expr
 import           Paso.Parser.Match
 
 ifParse :: Parser Expr
-ifParse = (tok TK.If $> uncurry If) <*> ifMulti
+ifParse = (tok TK.If $> uncurry If) <*> (MG.try ifPur <|> ifMulti)
 
 
 -- An if a | b | c
@@ -40,7 +41,13 @@ ifPur = do
 ifMulti :: Parser TupleIf
 ifMulti = do
   listeRes <- tok TK.Pipe *> MG.sepBy1 subParserCondExpr (tok TK.Pipe)
-  pure (TestExpr, case listeRes of {(x:xs) -> x :| xs ; _ -> undefined})
+  pure
+    ( TestExpr
+    , case listeRes of
+      (x : xs) -> x :| xs
+      _        -> undefined
+    )
   -- TODO Edit TestExpr value
  where
-  subParserCondExpr = (:~~>:) <$> exprPattern <*> (tok TK.BigArrowRight *> expr)
+  subParserCondExpr =
+    (:~~>:) <$> exprPattern <*> (tok TK.BigArrowRight *> expr)

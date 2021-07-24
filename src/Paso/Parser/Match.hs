@@ -22,7 +22,6 @@ valueConstructorParser = MG.choice
   , Rec <$> number
   , Rec <$> tuplePattern
   , Rec <$> listPattern
-  , Rec <$> exprPattern
   ]
 
 number :: Parser MatchConstructor
@@ -46,11 +45,11 @@ typePattern = do
   wName <- tok typeNameTok
   NonIrrefutable . Right . MkConstructor (getName wName) <$> many valueConstructorParser
 
-exprPattern :: Parser MatchConstructor
-exprPattern = strictTok (Iden "cond") $> NonIrrefutable (Left $ NotEvaluate TestExpr)
-
 patternParser :: Parser MatchConstructor
 patternParser =
-  MG.choice [typePattern, listPattern, tuplePattern, number, MG.try exprPattern]
+  MG.choice [typePattern, listPattern, tuplePattern, number]
   <|> Irrefutable <$> valueConstructorParser
   <|> parens patternParser
+
+exprPattern :: Parser MatchConstructor
+exprPattern = strictTok (Iden "_") $> Irrefutable Ignore -- <|> (strictTok (Iden "cond") $> NonIrrefutable (Left $ NotEvaluate TestExpr))
