@@ -11,7 +11,6 @@ data Tokens
   | INT Integer
   | FLOAT Float
   | TypeName Name
-  | TypeVar Name
   | STRING Value
   | If              -- ^ if
   | Match           -- ^ match
@@ -46,7 +45,6 @@ data Tokens
 
 instance Eq Tokens where
   STRING   _ == STRING   _ = True
-  TypeVar  _ == TypeVar  _ = True
   TypeName _ == TypeName _ = True
   FLOAT    _ == FLOAT    _ = True
   INT      _ == INT      _ = True

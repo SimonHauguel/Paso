@@ -1,4 +1,7 @@
-module Paso.Parser.IfThenElse where
+module Paso.Parser.IfThenElse
+  ( ifParse
+  )
+where
 
 import qualified Text.Megaparsec               as MG
 import           Text.Megaparsec                ( (<|>) )
@@ -12,9 +15,8 @@ import           Paso.Parser.Expr
 import           Paso.Parser.Match
 
 ifParse :: Parser Expr
-ifParse = (tok TK.If $> uncurry If) <*> (MG.try ifPur
-                                        <|> MG.try ifMulti
-                                        <|> ifMatch)
+ifParse =
+  (tok TK.If $> uncurry If) <*> (MG.try ifPur <|> MG.try ifMulti <|> ifMatch)
 
 
 -- An if a | b | c
@@ -50,13 +52,14 @@ ifMulti = do
       _        -> undefined
     )
   -- TODO Edit TestExpr value
+
  where
   subParserCondExpr =
     (:~~>:) <$> exprPattern <*> (tok TK.BigArrowRight *> expr)
 
 ifMatch :: Parser TupleIf
 ifMatch = do
-  toMatch <- tok TK.Match *> expr
+  toMatch  <- tok TK.Match *> expr
   listeRes <- tok TK.Pipe *> MG.sepBy1 subParserCondExpr (tok TK.Pipe)
   pure
     ( toMatch
@@ -65,6 +68,7 @@ ifMatch = do
       _        -> undefined
     )
   -- TODO Edit TestExpr value
+
  where
   subParserCondExpr =
     (:~~>:) <$> patternParser <*> (tok TK.BigArrowRight *> expr)

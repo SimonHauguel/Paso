@@ -42,7 +42,7 @@ lexerToken :: Lexer Tokens
 lexerToken =
   MG.choice
     $   lexeme'
-    <$> [litteral, try reser, try real, try relatif, typeName', identifier]
+    <$> [litteral, try reser, try real, try relatif, typeName, identifier]
 
 lexeme' :: Lexer a -> Lexer a
 lexeme' = lexeme $ MCL.space space1 lineComment_ mLineComment_
@@ -75,21 +75,11 @@ real :: Lexer Tokens
 real = FLOAT <$> maybeSigned float
 
 -- Parse Types
-typeVar :: Lexer Tokens
-typeVar = do
-  bodyName <- isIn maj_
-  rest     <- many (char '\'')
-  pure $ TypeVar $ bodyName : rest
-
 typeName :: Lexer Tokens
 typeName = do
   fir  <- isIn maj_
-  sec  <- isIn letter
-  rest <- many (isIn letter)
-  pure $ TypeName $ fir : sec : rest
-
-typeName' :: Lexer Tokens
-typeName' = try typeName <|> typeVar
+  sec <- many (isIn letter)
+  pure $ TypeName $ fir : sec
 
 
 identifier1 :: Lexer Tokens

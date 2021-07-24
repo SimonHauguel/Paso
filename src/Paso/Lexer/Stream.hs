@@ -57,5 +57,4 @@ tok #== MkPTokens {value = tok' } = case (tok, tok') of
   (INT a, INT b)           -> a == b
   (FLOAT a, FLOAT b)       -> a == b
   (STRING a, STRING b)     -> a == b
-  (TypeVar a, TypeVar b)   -> a == b
   (a, b)                   -> a == b

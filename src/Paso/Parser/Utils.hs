@@ -15,9 +15,6 @@ idenTok = Iden mempty
 idenOpTok :: Tokens
 idenOpTok = IdenOp mempty
 
-typeVarTok :: Tokens
-typeVarTok = TypeVar mempty
-
 typeNameTok :: Tokens
 typeNameTok = TypeName mempty
 
@@ -47,6 +44,5 @@ getName MkPTokens {value = a} = case a of
   Iden     x -> x
   IdenOp   x -> x
   TypeName x -> x
-  TypeVar  x -> x
   STRING   x -> x
   _          -> mempty

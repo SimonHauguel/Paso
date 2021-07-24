@@ -21,8 +21,8 @@ This is how i describe Paso. But... *what's this stupid iso before polymorphic !
 
 In fact this is pretty simple, look at this code :
 #+BEGIN_SRC haskell
-data Cat = Meow
-data Dog = Woof
+data Cats = Meow
+data Dogs = Woof
 
 needToEat :: Dogs -> IO ()
 needToEat _ = putStrLn "Is eating"
@@ -99,7 +99,7 @@ fiboN n := {
                         | { go (n - 1) [y ; x + y ; z]; }
             }
         | _             => { noway; }
-        }
+    }
     if (n >= 0) | { fiboList n [0 ; 1 ; 0]; } | { -1; }
 }
 #+END_SRC
