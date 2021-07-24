@@ -35,7 +35,6 @@ library
       Paso.Parser.TypesAnnotations
       Paso.Parser.ParserData
       Paso.Parser.Utils
-      Paso.Parser.AST.Match
       Paso.Parser.AST.Expr
       Paso.Program.Types
       Paso.Gen

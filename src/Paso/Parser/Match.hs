@@ -7,7 +7,7 @@ import           Control.Monad.Combinators
 import           Text.Megaparsec                ( (<|>) )
 import           Data.Functor                   ( ($>) )
 import           Paso.Parser.Utils
-import           Paso.Parser.AST.Match
+import           Paso.Parser.AST.Expr
 import           Paso.Parser.ParserData
 import           Paso.Program.Types
 
