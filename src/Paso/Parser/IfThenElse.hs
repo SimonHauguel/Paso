@@ -12,7 +12,9 @@ import           Paso.Parser.Expr
 import           Paso.Parser.Match
 
 ifParse :: Parser Expr
-ifParse = (tok TK.If $> uncurry If) <*> (MG.try ifPur <|> ifMulti)
+ifParse = (tok TK.If $> uncurry If) <*> (MG.try ifPur
+                                        <|> MG.try ifMulti
+                                        <|> ifMatch)
 
 
 -- An if a | b | c
@@ -51,3 +53,18 @@ ifMulti = do
  where
   subParserCondExpr =
     (:~~>:) <$> exprPattern <*> (tok TK.BigArrowRight *> expr)
+
+ifMatch :: Parser TupleIf
+ifMatch = do
+  toMatch <- tok TK.Match *> expr
+  listeRes <- tok TK.Pipe *> MG.sepBy1 subParserCondExpr (tok TK.Pipe)
+  pure
+    ( toMatch
+    , case listeRes of
+      (x : xs) -> x :| xs
+      _        -> undefined
+    )
+  -- TODO Edit TestExpr value
+ where
+  subParserCondExpr =
+    (:~~>:) <$> patternParser <*> (tok TK.BigArrowRight *> expr)
