@@ -20,7 +20,7 @@ valueConstructorParser = MG.choice
   [ strictTok (Iden "_") $> Ignore
   , Variable . getName <$> tok idenTok
   , Rec <$> number
-  , Rec <$> tuplePattern
+  , MG.try $ Rec <$> tuplePattern
   , Rec <$> listPattern
   ]
 
@@ -32,13 +32,13 @@ tuplePattern :: Parser MatchConstructor
 tuplePattern = parens bodyTuple
  where
   bodyTuple =
-    NonIrrefutable . Right . MkConstructor "Tuple" <$> sepBy2 valueConstructorParser (tok SemiColon)
+    NonIrrefutable . Right . MkConstructor "Tuple" <$> sepBy2 valueConstructorParser (tok Comma)
 
 listPattern :: Parser MatchConstructor
 listPattern = between (tok OpenBrace) (tok CloseBrace) bodyList
  where
   bodyList =
-    NonIrrefutable . Right . MkConstructor "List" <$> sepEndBy valueConstructorParser (tok SemiColon)
+    NonIrrefutable . Right . MkConstructor "List" <$> sepEndBy valueConstructorParser (tok Comma)
 
 typePattern :: Parser MatchConstructor
 typePattern = do
@@ -47,7 +47,7 @@ typePattern = do
 
 patternParser :: Parser MatchConstructor
 patternParser =
-  MG.choice [typePattern, listPattern, tuplePattern, number]
+  MG.choice [MG.try tuplePattern, typePattern, listPattern,  number]
   <|> Irrefutable <$> valueConstructorParser
   <|> parens patternParser
 
