@@ -4,7 +4,6 @@ module Paso.Parser.Match where
 import qualified Text.Megaparsec               as MG
 import           Paso.Language.Tokens
 import           Control.Monad.Combinators
-import           Text.Megaparsec                ( (<|>) )
 import           Data.Functor                   ( ($>) )
 import           Paso.Parser.Utils
 import           Paso.Parser.AST.Expr
@@ -26,7 +25,6 @@ valueConstructorParser = MG.choice
 
 number :: Parser MatchConstructor
 number = NonIrrefutable . Left <$> (tok intTok $> Value "Number") -- TODO change the value
-
 
 tuplePattern :: Parser MatchConstructor
 tuplePattern = parens bodyTuple
@@ -52,4 +50,5 @@ patternParser =
   <|> parens patternParser
 
 exprPattern :: Parser MatchConstructor
-exprPattern = strictTok (Iden "_") $> Irrefutable Ignore <|> (strictTok (Iden "cond") $> NonIrrefutable (Left $ NotEvaluate TestExpr))
+exprPattern = strictTok (Iden "_") $> Irrefutable Ignore
+           <|> (strictTok (Iden "cond") $> NonIrrefutable (Left $ NotEvaluate TestExpr))
