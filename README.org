@@ -29,7 +29,7 @@ needToEat _ = putStrLn "Is eating"
 #+END_SRC
 
 For people who are not mad scientists and cannot read haskell, this code :
- - Creates 2 types ~Cat~ and ~Dog~, with as constructor (a way to build a value of this type) respectively ~Meow~ and ~Woof~.
+ - Creates 2 types ~Cats~ and ~Dogs~, with as constructor (a way to build a value of this type) respectively ~Meow~ and ~Woof~.
  - Then there is a ~needToEat~ function, it takes a ~Dogs~ and makes it eat.
 
 But there is an important problem ! How a cat can eat with this program ?
@@ -38,7 +38,7 @@ This is terrible :(
 This is where paso provides a solution! /(haskell too, but shhh, it's my readme I do what I want)/
 
 ** What's an isomorphism between types ?
-Let's take the ~Cat~ and ~Dog~ types.
+Let's take the ~Cats~ and ~Dogs~ types.
 Spoiler: They are isomorphic.
 But why?
 
@@ -90,7 +90,7 @@ And now you've got cats thanks to paso, isn't that amazing!
 
 ** Dynamic Fibonacci
 #+BEGIN_SRC haskell
-fiboN : ~Int -> Int -- compute the n-th element of fibonacci sequence in a dynamic way
+fiboN : { A ~> Int } => A -> Int -- compute the n-th element of fibonacci sequence in a dynamic way
 fiboN n := {
     let go n list := {
         if match list
@@ -100,6 +100,6 @@ fiboN n := {
             }
         | _             => { noway; }
     }
-    if (n >= 0) | { fiboList n [0 ; 1 ; 0]; } | { -1; }
+    if (n >= 0) | { go n [0 ; 1 ; 0]; } | { -1; }
 }
 #+END_SRC
