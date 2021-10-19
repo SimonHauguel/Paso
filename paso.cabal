@@ -32,12 +32,18 @@ library
       Paso.Lexer.Stream
       Paso.Lexer.Tokenise
       Paso.Parser.IfThenElse
-      Paso.Parser.TypesAnnotations
       Paso.Parser.ParserData
       Paso.Parser.Utils
       Paso.Parser.AST.Expr
       Paso.Program.Types
       Paso.Gen
+      Paso.Parser.Types.TypesAnnotations
+      Paso.Parser.AST.Constraint
+      Paso.Parser.AST.TypesRepresentation
+      Paso.Parser.Expr
+      Paso.Parser.Match
+      Paso.Program.Context
+
 
   other-modules:
       Paths_paso

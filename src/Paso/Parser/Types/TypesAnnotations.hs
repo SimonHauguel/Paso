@@ -1,4 +1,4 @@
-module Paso.Parser.TypesAnnotations where
+module Paso.Parser.Types.TypesAnnotations where
 
 import qualified Text.Megaparsec               as MG
 import           Text.Megaparsec                ( (<|>)
@@ -16,15 +16,16 @@ import           Data.Set                       ( fromList
                                                 , empty
                                                 )
 
-typeAnnotation :: Parser PasoType -- TODO : Add recursive Arrow type (HOF syntax)
-typeAnnotation = (,) <$> constraint <*> subTypeArrow
+typeAnnotation :: Parser PasoType
+typeAnnotation = PasoType <$> constraint <*> subTypeArrow
  where
-  typeParser = MG.sepBy1
-    (   (Unique . getName <$> tok typeNameTok)
-    <|> (SucredIso . getName <$> (tok Iso *> tok typeNameTok))
-    <|> parens subTypeArrow
-    )
-    (tok ArrowRight)
+  typeParser =
+    MG.choice
+        [ Unique . getName <$> tok typeNameTok
+        , SucredIso . getName <$> (tok Iso *> tok typeNameTok)
+        , parens subTypeArrow
+        ]
+      `MG.sepBy1` tok ArrowRight
 
   constraint   = MG.option empty (try $ multiConstraint <* tok BigArrowRight)
 
@@ -47,4 +48,3 @@ isoSingleConstraint = try arrowLeft <|> try arrowRight <|> iso
   arrowLeft  = buildConstraint (flip CN.Coerce) CoerceLeft
   arrowRight = buildConstraint CN.Coerce CoerceRight
   iso        = buildConstraint CN.Iso Iso
-
