@@ -3,6 +3,7 @@ module Paso.Parser.Types.TypesAnnotations where
 import qualified Text.Megaparsec               as MG
 import           Text.Megaparsec                ( (<|>)
                                                 , try
+                                                , many
                                                 )
 import           Paso.Parser.ParserData
 import           Paso.Program.Context
@@ -21,8 +22,10 @@ typeAnnotation = PasoType <$> constraint <*> subTypeArrow
  where
   typeParser =
     MG.choice
-        [ Unique . getName <$> tok typeNameTok
-        , SucredIso . getName <$> (tok Iso *> tok typeNameTok)
+        [ Unique . getName <$> tok typeNameTok <*> try
+          (many $ parens subTypeArrow)
+        , SucredIso . getName <$> (tok Iso *> tok typeNameTok) <*> try
+          (many $ parens subTypeArrow)
         , parens subTypeArrow
         ]
       `MG.sepBy1` tok ArrowRight

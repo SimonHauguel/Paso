@@ -1,5 +1,6 @@
 module Paso.Program.Types where
 
+
 data Builder
   = (:->:) Types Types
   | (:+:)  Types Types
@@ -19,4 +20,4 @@ data Constructor a
   , constuctorArg :: [a]
   } deriving Show
 
-type TypeLeverConstructor = Constructor Types
+type TypeLevelConstructor = Constructor Types
