@@ -24,8 +24,7 @@ typeAnnotation = PasoType <$> constraint <*> subTypeArrow
     MG.choice
         [ Unique . getName <$> tok typeNameTok <*> try
           (many $ parens subTypeArrow)
-        , SucredIso . getName <$> (tok Iso *> tok typeNameTok) <*> try
-          (many $ parens subTypeArrow)
+        , SucredIso <$> (tok Iso *> subTypeArrow)
         , parens subTypeArrow
         ]
       `MG.sepBy1` tok ArrowRight

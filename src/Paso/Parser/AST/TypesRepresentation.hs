@@ -5,7 +5,7 @@ import           Paso.Parser.AST.Constraint
 import           Paso.Program.Context
 
 data Arrow
-  = SucredIso String [Arrow]
+  = SucredIso Arrow
   | Unique String [Arrow]
   | Fun Arrow Arrow
   deriving Show
