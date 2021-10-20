@@ -20,14 +20,16 @@ import           Data.Set                       ( fromList
 typeAnnotation :: Parser PasoType
 typeAnnotation = PasoType <$> constraint <*> subTypeArrow
  where
-  typeParser =
-    MG.choice
-        [ Unique . getName <$> tok typeNameTok <*> try
-          (many $ parens subTypeArrow)
-        , SucredIso <$> (tok Iso *> subTypeArrow)
-        , parens subTypeArrow
-        ]
-      `MG.sepBy1` tok ArrowRight
+  typeSubParser = MG.choice
+    [ Unique
+    .   getName
+    <$> tok typeNameTok
+    <*> (try $ many (typeSubParser <|> parens subTypeArrow))
+    , SucredIso <$> (tok Iso *> (parens subTypeArrow <|> typeSubParser))
+    , parens subTypeArrow
+    ]
+
+  typeParser   = typeSubParser `MG.sepBy1` tok ArrowRight
 
   constraint   = MG.option empty (try $ multiConstraint <* tok BigArrowRight)
 
