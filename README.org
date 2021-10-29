@@ -8,6 +8,7 @@
 - [[#review][Review]]
   - [[#whats-an-isomorphism-between-types-][What's an isomorphism between types ?]]
   - [[#how-paso-uses-it-][How Paso uses it ?]]
+  - [[#whats-subtyping--do-you-mean-coercing-][What's subtyping ? Do you mean coercing ?]]
 - [[#an-exemple-in-a-concret-case][An exemple in a concret case]]
   - [[#dynamic-fibonacci][Dynamic Fibonacci]]
 
@@ -47,8 +48,10 @@ exists (f : A \rightarrow B, g : B \rightarrow A) such as (f . g) \equiv idA and
 
 In other words, there must be two functions ~f~ and ~g~. ~f~ map from ~A~ to ~B~ and ~g~ from ~B~ to ~A~ (the names of the functions do not matter)
 And two rules must be respected:
- - The composition of ~f . g~ must be equivalent to the identity of ~A~
- - The composition of ~g . f~ must be equivalent to the identity of ~B~
+ - ~f . g~ must be equivalent to the identity of ~A~
+ - ~g . f~ must be equivalent to the identity of ~B~
+
+/Yes, it looks like a bijection./
 
 So now, let's implement ~f : Cats -> Dogs~ and ~g : Dogs -> Cats~
 #+BEGIN_SRC haskell
@@ -86,6 +89,49 @@ So, we can pass Meow to this function, this is amazing ! Cat can finally eat
 
 And now you've got cats thanks to paso, isn't that amazing!
 
+** What's subtyping ? Do you mean coercing ?
+
+Now, paso allow us to handle isomorphism in our progam at first level. But there is a problem : Isomorphisms are quite rare. Let's assume two new types :
+
+#+BEGIN_SRC haskell
+data Fishes = Salmon | Shark  | Carp
+data Birds  = Phoenix| Aviary | Starling | Owl
+-- There are two secrets in the definition of Birds
+#+END_SRC
+
+There are not isomorphic (If you disagree, try implementing ~f~ and ~g~ in both cases). But, there is something we can do safely : We can obtain a bird from a fish.
+
+That's true, look at these functions :
+#+BEGIN_SRC haskell
+f :: Fishes -> Birds
+f Salmon = Phoenix
+f Shark  = Aviary
+f Carp   = Starling
+
+g :: Birds -> Fishes
+g Phoenix = Salmon
+g Shark   = Aviary
+g Carp    = Starling
+#+END_SRC
+
+Notice two things :
+ - ~g~ is partial but not ~f~
+ - ~(g . f)~ is an identity for Birds type
+
+In fact, this is just like an isomorphism but we do not need to respect the two identity law (from Birds and Fishes), but just one of them.
+
+In Paso we call it ~Coerce~, we write it ~A ~> B~, and we read it ~I can safely get a B from a A~ or ~A can coerce to B~.
+
+If you have some intuition you had probably remark :
+ - It looks like an injection
+ - This is very similar to subtyping
+
+
+In a more formal way :
+#+BEGIN_QUOTE
+A ~> B \Leftrightarrow exists f : A \rightarrow B and B \rightarrow A such as
+(f . g) \equiv idA
+#+END_QUOTE
 * An exemple in a concret case
 
 ** Dynamic Fibonacci
