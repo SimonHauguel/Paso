@@ -99,7 +99,7 @@ data Birds  = Phoenix| Aviary | Starling | Owl
 -- There are two secrets in the definition of Birds
 #+END_SRC
 
-There are not isomorphic (If you disagree, try implementing ~f~ and ~g~ in both cases). But, there is something we can do safely : We can obtain a bird from a fish.
+They are not isomorphic (If you disagree, try implementing ~f~ and ~g~ in both cases). But, there is something we can do safely : We can obtain a bird from a fish.
 
 That's true, look at these functions :
 #+BEGIN_SRC haskell
