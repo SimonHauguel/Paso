@@ -109,14 +109,14 @@ f Shark  = Aviary
 f Carp   = Starling
 
 g :: Birds -> Fishes
-g Phoenix = Salmon
-g Shark   = Aviary
-g Carp    = Starling
+g Phoenix  = Salmon
+g Aviary   = Shark 
+g Starling = Carp
 #+END_SRC
 
 Notice two things :
  - ~g~ is partial but not ~f~
- - ~(g . f)~ is an identity for Birds type
+ - ~(f . g)~ is an identity for Fishes type
 
 In fact, this is just like an isomorphism but we do not need to respect the two identity law (from Birds and Fishes), but just one of them.
 
