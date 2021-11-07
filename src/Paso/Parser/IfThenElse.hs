@@ -10,29 +10,12 @@ import           Paso.Parser.ParserData
 import           Paso.Parser.Utils
 import           Paso.Parser.AST.Expr
 import           Data.Functor                   ( ($>) )
-import           Data.List.NonEmpty             ( NonEmpty(..) )
+import           Data.List.NonEmpty             ( fromList )
 import           Paso.Parser.Expr
 import           Paso.Parser.Match
 
 ifParse :: Parser Expr
-ifParse =
-  (tok TK.If $> uncurry If) <*> (MG.try ifPur <|> MG.try ifMulti <|> ifMatch)
-
-
--- An if a | b | c
--- compile to this structure :
--- if match a | True => b
---            | _ => c
-ifPur :: Parser TupleIf
-ifPur = do
-  cond   <- expr
-  first  <- tok TK.Pipe *> expr
-  second <- tok TK.Pipe *> expr
-  pure
-    ( cond
-    , (NonIrrefutable (Left $ Value "True") :~~>: first)
-      :| [Irrefutable Ignore :~~>: second]
-    ) -- TODO change \"True\" value
+ifParse = (tok TK.If $> uncurry If) <*> (MG.try ifMulti <|> ifMatch)
 
 
 -- An if | cond1 => a
@@ -44,31 +27,19 @@ ifPur = do
 --               | _     => c
 ifMulti :: Parser TupleIf
 ifMulti = do
-  listeRes <- tok TK.Pipe *> MG.sepBy1 subParserCondExpr (tok TK.Pipe)
-  pure
-    ( TestExpr
-    , case listeRes of
-      (x : xs) -> x :| xs
-      _        -> undefined
-    )
+  let subParserCondExpr =
+        (:~~>:) <$> exprPattern <*> (tok TK.BigArrowRight *> expr)
+  listRes <- tok TK.Pipe *> MG.sepBy1 subParserCondExpr (tok TK.Pipe)
+  pure (TestExpr, fromList listRes)
   -- TODO Edit TestExpr value
 
- where
-  subParserCondExpr =
-    (:~~>:) <$> exprPattern <*> (tok TK.BigArrowRight *> expr)
+
 
 ifMatch :: Parser TupleIf
 ifMatch = do
-  toMatch  <- tok TK.Match *> expr
-  listeRes <- tok TK.Pipe *> MG.sepBy1 subParserCondExpr (tok TK.Pipe)
-  pure
-    ( toMatch
-    , case listeRes of
-      (x : xs) -> x :| xs
-      _        -> undefined
-    )
+  let subParserCondExpr =
+        (:~~>:) <$> patternParser <*> (tok TK.BigArrowRight *> expr)
+  toMatch <- tok TK.Match *> expr
+  listRes <- tok TK.Pipe *> MG.sepBy1 subParserCondExpr (tok TK.Pipe)
+  pure (toMatch, fromList listRes)
   -- TODO Edit TestExpr value
-
- where
-  subParserCondExpr =
-    (:~~>:) <$> patternParser <*> (tok TK.BigArrowRight *> expr)
