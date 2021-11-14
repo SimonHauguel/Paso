@@ -4,15 +4,12 @@ module Paso.Parser.AST.Expr where
 import           Data.List.NonEmpty
 import           Paso.Program.Types
 
-
 data Expr
-  = If
-    Expr              -- ^ The pattern to match
-    (NonEmpty ToExpr) -- ^ An "map" from a pattern to an expr
-    -- ^ That means that an if expression is simply sugar from a match expression
+  = If Expr (NonEmpty ToExpr)
   | Let (NonEmpty ToExpr)
-  | TestExpr -- Just to test some parser without be annoying with parse complex expression
-             -- Must be deleted in the future
+  | Function String Expr
+  | FunctionCall Expr Expr
+  | TestExpr -- TODO Delete
   deriving Show
 
 
