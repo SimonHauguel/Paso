@@ -13,7 +13,7 @@ import           Paso.Parser.AST.Function
 
 function :: Parser Function
 function = do
-  name <- tok idenTok
+  name <- tok idenTok <|> tok idenOpTok
   args <- manyTill (tok idenTok <|> tok idenOpTok) (tok MorseEqual)
   value <- expr
   let unsucredExpr = foldr (Lambda . getName) value args
