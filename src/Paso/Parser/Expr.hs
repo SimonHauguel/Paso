@@ -48,7 +48,7 @@ lambda = do
   arg   <- MG.many (tok idenTok <|> tok idenOpTok)
   _     <- tok TK.BigArrowRight
   value <- expr
-  pure $ foldr Function value (getName <$> arg)
+  pure $ foldr Lambda value (getName <$> arg)
 
 exprPattern :: Parser MatchConstructor
 exprPattern = strictTok (TK.Iden "_") $> Irrefutable Ignore

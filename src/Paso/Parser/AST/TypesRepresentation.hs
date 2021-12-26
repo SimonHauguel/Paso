@@ -8,8 +8,12 @@ data Arrow
   = SucredIso Arrow
   | Unique String [Arrow]
   | Fun Arrow Arrow
-  deriving Show
+  deriving (Show, Eq)
 
 data PasoType = PasoType (Context Constraint) Arrow
   deriving Show
 data PasoTypeNamed = PasoTypeNamed String PasoType
+
+
+instance Eq PasoType where
+  (PasoType _ t) == (PasoType _ t') = t == t'

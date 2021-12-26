@@ -7,7 +7,7 @@ import           Paso.Program.Types
 data Expr
   = If Expr (NonEmpty ToExpr)
   | Let (NonEmpty ToExpr)
-  | Function String Expr
+  | Lambda String Expr
   | FunctionCall Expr Expr
   | TestExpr -- TODO Delete
   deriving Show
