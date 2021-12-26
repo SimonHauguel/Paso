@@ -49,6 +49,3 @@ patternParser =
   <|> Irrefutable <$> valueConstructorParser
   <|> parens patternParser
 
-exprPattern :: Parser MatchConstructor
-exprPattern = strictTok (Iden "_") $> Irrefutable Ignore
-           <|> (strictTok (Iden "cond") $> NonIrrefutable (Left $ NotEvaluate TestExpr))

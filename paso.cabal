@@ -31,7 +31,6 @@ library
       Paso.Language.Tokens
       Paso.Lexer.Stream
       Paso.Lexer.Tokenise
-      Paso.Parser.IfThenElse
       Paso.Parser.ParserData
       Paso.Parser.Utils
       Paso.Parser.AST.Expr

@@ -124,9 +124,7 @@ reser :: Lexer Tokens
 reser = MG.choice $ zipWith ($>) (string . pack <$> otherReserved) tok
  where
   tok =
-    [ OpenMacroBlock
-    , CloseMacroBlock
-    , OpenBrace
+    [ OpenBrace
     , CloseBrace
     , OpenParent
     , CloseParent

@@ -25,8 +25,6 @@ data Tokens
   | CoerceLeft      -- ^ <~
   | CoerceRight     -- ^ ~>
   | Iso             -- ^ ~
-  | OpenMacroBlock  -- ^ #[
-  | CloseMacroBlock -- ^ ]#
   | OpenBrace       -- ^ [
   | CloseBrace      -- ^ ]
   | OpenParent      -- ^ (
