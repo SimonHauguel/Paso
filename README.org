@@ -128,10 +128,8 @@ If you have some intuition you had probably remark :
 
 
 In a more formal way :
-#+BEGIN_QUOTE
-A ~> B \Leftrightarrow exists f : A \rightarrow B and B \rightarrow A such as
-(f . g) \equiv idA
-#+END_QUOTE
+A ~> B \Leftrightarrow exists f : A \rightarrow B and g : B \rightarrow A such as (f . g) \equiv idA
+
 * An exemple in a concret case
 
 ** Dynamic Fibonacci
