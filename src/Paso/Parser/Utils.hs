@@ -6,6 +6,7 @@ import           Paso.Parser.ParserData
 import           Control.Monad.Combinators
 import           Paso.Lexer.Stream
 
+
 stringTok :: Tokens
 stringTok = STRING mempty
 
@@ -46,3 +47,13 @@ getName MkPTokens {value = a} = case a of
   TypeName x -> x
   STRING   x -> x
   _          -> mempty
+
+extInt :: PTokens -> Integer
+extInt MkPTokens {value = a} = case a of
+    INT x -> x
+    _     -> 0
+
+extFloat :: PTokens -> Float
+extFloat MkPTokens {value = a} = case a of
+    FLOAT x -> x
+    _       -> 0.0

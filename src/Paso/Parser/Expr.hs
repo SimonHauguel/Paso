@@ -1,9 +1,9 @@
 module Paso.Parser.Expr where
 
 
-import qualified Text.Megaparsec               as MG
+import qualified Text.Megaparsec                as MG
 import           Text.Megaparsec                ( (<|>) )
-import qualified Paso.Language.Tokens          as TK
+import qualified Paso.Language.Tokens           as TK
 import           Paso.Parser.ParserData
 import           Paso.Parser.Utils
 import           Paso.Parser.AST.Expr
@@ -13,24 +13,17 @@ import           Paso.Parser.Match
 
 
 expr :: Parser Expr
-expr = MG.satisfy (const True) $> TestExpr
+expr = ifParse <|> num <|> lambda <|> iden
 
 ifParse :: Parser Expr
 ifParse = (tok TK.If $> uncurry If) <*> (MG.try ifMulti <|> ifMatch)
 
--- An if | cond1 => a
---       | cond2 => b
---       | _     => c
--- compile to this structure :
--- if match True | cond1 => a
---               | cond2 => b
---               | _     => c
 ifMulti :: Parser TupleIf
 ifMulti = do
   let subParserCondExpr =
         (:~~>:) <$> exprPattern <*> (tok TK.BigArrowRight *> expr)
   listRes <- tok TK.Pipe *> MG.sepBy1 subParserCondExpr (tok TK.Pipe)
-  pure (TestExpr, fromList listRes)
+  pure (UIdentifier "true", fromList listRes)
   -- TODO Edit TestExpr value
 
 ifMatch :: Parser TupleIf
@@ -40,7 +33,6 @@ ifMatch = do
   toMatch <- tok TK.Match *> expr
   listRes <- tok TK.Pipe *> MG.sepBy1 subParserCondExpr (tok TK.Pipe)
   pure (toMatch, fromList listRes)
-  -- TODO Edit TestExpr value
 
 lambda :: Parser Expr
 lambda = do
@@ -50,6 +42,14 @@ lambda = do
   value <- expr
   pure $ foldr Lambda value (getName <$> arg)
 
+num :: Parser Expr
+num = numberI <|> numberF
+  where
+    numberI = NumberI . extInt   <$> tok intTok
+    numberF = NumberF . extFloat <$> tok floatTok
+
+iden :: Parser Expr
+iden = UIdentifier . getName <$> (tok idenOpTok <|> tok idenTok)
+
 exprPattern :: Parser MatchConstructor
-exprPattern = strictTok (TK.Iden "_") $> Irrefutable Ignore
-           <|> (strictTok (TK.Iden "cond") $> NonIrrefutable (Left $ NotEvaluate TestExpr))
+exprPattern = NonIrrefutable . Left . NotEvaluate <$> expr

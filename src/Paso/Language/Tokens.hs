@@ -3,7 +3,6 @@
 module Paso.Language.Tokens where
 
 type Name = String
-type Value = String
 
 data Tokens
   = IdenOp Name
@@ -11,7 +10,7 @@ data Tokens
   | INT Integer
   | FLOAT Float
   | TypeName Name
-  | STRING Value
+  | STRING String
   | If              -- ^ if
   | Match           -- ^ match
   | Define          -- ^ define

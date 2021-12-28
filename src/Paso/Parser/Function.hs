@@ -8,9 +8,6 @@ import           Paso.Parser.ParserData
 import           Paso.Parser.Expr
 import           Paso.Parser.AST.Function
 
-
--- TODO : Op parser
-
 function :: Parser Function
 function = do
   name <- tok idenTok <|> tok idenOpTok

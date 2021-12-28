@@ -30,22 +30,22 @@ tuplePattern :: Parser MatchConstructor
 tuplePattern = parens bodyTuple
  where
   bodyTuple =
-    NonIrrefutable . Right . MkConstructor "Tuple" <$> sepBy2 valueConstructorParser (tok Comma)
+    NonIrrefutable . Right . MkConstructor "tuple" <$> sepBy2 valueConstructorParser (tok Comma)
 
 listPattern :: Parser MatchConstructor
 listPattern = between (tok OpenBrace) (tok CloseBrace) bodyList
  where
   bodyList =
-    NonIrrefutable . Right . MkConstructor "List" <$> sepEndBy valueConstructorParser (tok Comma)
+    NonIrrefutable . Right . MkConstructor "list" <$> sepEndBy valueConstructorParser (tok Comma)
 
-typePattern :: Parser MatchConstructor
-typePattern = do
-  wName <- tok typeNameTok
+idenPattern :: Parser MatchConstructor
+idenPattern = do
+  wName <- tok idenTok
   NonIrrefutable . Right . MkConstructor (getName wName) <$> many valueConstructorParser
 
 patternParser :: Parser MatchConstructor
 patternParser =
-  MG.choice [MG.try tuplePattern, typePattern, listPattern,  number]
+  MG.choice [MG.try tuplePattern, idenPattern, listPattern,  number]
   <|> Irrefutable <$> valueConstructorParser
   <|> parens patternParser
 

@@ -70,7 +70,6 @@ prefixedBinary = char 'b' *> binary
 prefixedHexadecimal :: Num a => Lexer a
 prefixedHexadecimal = char 'x' *> hexadecimal
 
-
 real :: Lexer Tokens
 real = FLOAT <$> maybeSigned float
 

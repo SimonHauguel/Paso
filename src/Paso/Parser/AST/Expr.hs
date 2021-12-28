@@ -6,7 +6,11 @@ import           Paso.Program.Types
 
 data Expr
   = If Expr (NonEmpty ToExpr)
-  | Let (NonEmpty ToExpr)
+  | NumberI Integer
+  | NumberF Float
+  | Str String
+  | Let ToExpr
+  | UIdentifier String
   | Lambda String Expr
   | FunctionCall Expr Expr
   | TestExpr -- TODO Delete
