@@ -13,7 +13,11 @@ import           Paso.Parser.Match
 
 
 expr :: Parser Expr
-expr = ifParse <|> num <|> lambda <|> iden
+expr = MG.try contextExpr <|> pureExpr <|> parens expr
+  where pureExpr      = ifParse <|> num <|> lambda <|> iden
+        contextExpr   = MG.between (tok TK.OpenBracket) (tok TK.CloseBracket)
+                        $ Imperatif <$> sepEndBy2 expr (tok TK.SemiColon)
+        sepEndBy2 p s = (:) <$> (p <* s) <*> MG.sepEndBy1 p s
 
 ifParse :: Parser Expr
 ifParse = (tok TK.If $> uncurry If) <*> (MG.try ifMulti <|> ifMatch)
@@ -24,7 +28,7 @@ ifMulti = do
         (:~~>:) <$> exprPattern <*> (tok TK.BigArrowRight *> expr)
   listRes <- tok TK.Pipe *> MG.sepBy1 subParserCondExpr (tok TK.Pipe)
   pure (UIdentifier "true", fromList listRes)
-  -- TODO Edit TestExpr value
+
 
 ifMatch :: Parser TupleIf
 ifMatch = do

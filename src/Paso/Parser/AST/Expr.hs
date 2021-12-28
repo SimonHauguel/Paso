@@ -13,7 +13,7 @@ data Expr
   | UIdentifier String
   | Lambda String Expr
   | FunctionCall Expr Expr
-  | TestExpr -- TODO Delete
+  | Imperatif [Expr]
   deriving Show
 
 
