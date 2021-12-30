@@ -62,7 +62,7 @@ maybeSigned = signed $ pure ()
 
 relatif :: Lexer Tokens
 relatif = INT <$> maybeSigned
-  (decimal <|> try (char '0' *> (prefixedBinary <|> prefixedHexadecimal)))
+  (try (char '0' *> (prefixedBinary <|> prefixedHexadecimal)) <|> decimal)
 
 prefixedBinary :: Num a => Lexer a
 prefixedBinary = char 'b' *> binary
