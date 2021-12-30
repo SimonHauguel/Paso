@@ -9,7 +9,7 @@ data Expr
   | NumberI Integer
   | NumberF Float
   | Str String
-  | Let ToExpr
+  | Let String Expr
   | UIdentifier String
   | Lambda String Expr
   | FunctionCall Expr Expr

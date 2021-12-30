@@ -24,7 +24,7 @@ typeAnnotation = PasoType <$> constraint <*> subTypeArrow
     [ Unique
     .   getName
     <$> tok typeNameTok
-    <*> (try $ many (typeSubParser <|> parens subTypeArrow))
+    <*> try (many $ typeSubParser <|> parens subTypeArrow)
     , SucredIso <$> (tok Iso *> (parens subTypeArrow <|> typeSubParser))
     , parens subTypeArrow
     ]

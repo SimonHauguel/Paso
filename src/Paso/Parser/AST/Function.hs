@@ -6,4 +6,5 @@ import Paso.Parser.AST.Expr
 
 data Function = Function String Expr
   deriving Show
-type TypedFunction = (PasoType, Function)
+data TypedFunction = TypedFunction PasoType Function
+  deriving Show
