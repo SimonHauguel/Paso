@@ -15,7 +15,7 @@ import           Paso.Parser.Match
 
 expr :: Parser Expr
 expr = MG.try contextExpr <|> pureExpr <|> parens expr
-  where pureExpr      = ifParse <|> num <|> lambda <|> letBind <|> iden
+  where pureExpr      = litteral <|> num <|> ifParse <|> lambda <|> letBind <|> iden
         contextExpr   = do
           let betBracket = MG.between (tok TK.OpenBracket) (tok TK.CloseBracket)
           allExpr <- betBracket $ MG.sepEndBy1 expr (tok TK.SemiColon)
@@ -64,6 +64,9 @@ letBind = do
   value <- expr
   let unsucredExpr = foldr (Lambda . getName) value args
   pure $ (Let . getName) name unsucredExpr
+
+litteral :: Parser Expr
+litteral = Str . getName <$> tok stringTok
 
 exprPattern :: Parser MatchConstructor
 exprPattern = NonIrrefutable . Left . NotEvaluate <$> expr
