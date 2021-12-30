@@ -4,15 +4,18 @@ module Paso.Parser.AST.TypesRepresentation where
 import           Paso.Parser.AST.Constraint
 import           Paso.Program.Context
 
-data Arrow
-  = SucredIso Arrow
-  | Unique String [Arrow]
-  | Fun Arrow Arrow
+data Type
+  = SucredIso Type
+  | Unique String [Type]
+  | Fun Type Type
+  | And [Type]
+  | Or [(String, PasoType)]
   deriving (Show, Eq)
 
-data PasoType = PasoType (Context Constraint) Arrow
+data PasoType = PasoType (Context Constraint) Type
   deriving Show
-data PasoTypeNamed = PasoTypeNamed String PasoType
+data PasoTypeDec = PasoTypeDec String [String] PasoType
+  deriving Show
 
 
 instance Eq PasoType where

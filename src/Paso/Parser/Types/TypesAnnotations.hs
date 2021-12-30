@@ -19,22 +19,21 @@ import           Data.Set                       ( fromList
 
 typeAnnotation :: Parser PasoType
 typeAnnotation = PasoType <$> constraint <*> subTypeArrow
- where
+
+subTypeArrow :: Parser Type
+subTypeArrow = foldr1 Fun <$> typeParser
+  where
+  typeParser   = (typeSubParser `MG.sepBy1` tok ArrowRight) <|> parens typeParser
   typeSubParser = MG.choice
-    [ Unique
-    .   getName
-    <$> tok typeNameTok
-    <*> try (many $ typeSubParser <|> parens subTypeArrow)
+    [ Unique . getName <$> tok typeNameTok
+                       <*> try (many $ typeSubParser <|> parens subTypeArrow)
     , SucredIso <$> (tok Iso *> (parens subTypeArrow <|> typeSubParser))
     , parens subTypeArrow
     ]
 
-  typeParser   = typeSubParser `MG.sepBy1` tok ArrowRight
 
-  constraint   = MG.option empty (try $ multiConstraint <* tok BigArrowRight)
-
-  subTypeArrow = foldr1 Fun <$> typeParser
-
+constraint :: Parser (Context CN.Constraint)
+constraint = MG.option empty (try $ multiConstraint <* tok BigArrowRight)
 
 multiConstraint :: Parser (Context CN.Constraint)
 multiConstraint = multi <|> single
