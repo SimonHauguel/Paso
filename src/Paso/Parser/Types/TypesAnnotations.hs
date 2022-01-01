@@ -26,7 +26,9 @@ subTypeArrow = foldr1 Fun <$> typeParser
   typeParser   = (typeSubParser `MG.sepBy1` tok ArrowRight) <|> parens typeParser
   typeSubParser = MG.choice
     [ Unique . getName <$> tok typeNameTok
-                       <*> try (many $ typeSubParser <|> parens subTypeArrow)
+                       <*> try
+                          (many $ parens subTypeArrow
+                          <|> (`Unique` []) . getName <$> tok typeNameTok)
     , SucredIso <$> (tok Iso *> (parens subTypeArrow <|> typeSubParser))
     , parens subTypeArrow
     ]
