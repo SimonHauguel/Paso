@@ -1,0 +1,25 @@
+type Bool := {
+      true
+    v false
+}
+
+type Two := {
+     one
+   v two
+}
+
+define Bool ~ Two := {
+    go : Bool -> Two
+    go a := if match a | true => one | false => two;
+
+    from : Two -> Bool
+    from a := {
+         if match a | one => true | two => false
+    };
+}
+
+ifWithTwo : ~Bool -> A -> A -> A
+ifWithTwo cond then else := {
+    if | cond => then
+       | _    => else
+};
