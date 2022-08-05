@@ -10,7 +10,7 @@
 #
 # resolver: lts-3.5
 # resolver: nightly-2015-09-21
-# resolver: ghc-8.10.2
+#resolver: ghc-9.0.2
 #
 # The location of a snapshot can be provided as a file or url. Stack assumes
 # a snapshot provided as a file might change, whereas a url resource does not.
@@ -18,7 +18,7 @@
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
 resolver:
-  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/17/12.yaml
+  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/19/17.yaml
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.

@@ -1,6 +1,5 @@
 module Paso.Parser.AST.Expr where
 
-
 import           Data.List.NonEmpty
 import           Paso.Program.Types
 
@@ -15,7 +14,6 @@ data Expr
   | FunctionCall Expr Expr
   | Imperatif [Expr]
   deriving Show
-
 
 -- Meta-Match type
 data MatchValue -- NOTE : This is not an expression
@@ -42,6 +40,7 @@ data MatchTo a = (:~~>:) MatchConstructor a
   -- ^ "Map" representation
   -- from a match value to a type `a`
   deriving Show
+
 
 type ToExpr = MatchTo Expr
 type TupleIf = (Expr, NonEmpty ToExpr)
